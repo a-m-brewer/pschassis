@@ -94,10 +94,16 @@ func (s *Service) SetupServer(router *mux.Router) {
 
 // URL gets the URL for the current service
 func (s *Service) URL() (string, error) {
-	hostname, err := os.Hostname()
-	if err != nil {
-		return "", err
+	hostname := viper.GetString("hostname")
+
+	if hostname == "" {
+		realHostname, err := os.Hostname()
+		if err != nil {
+			return "", err
+		}
+		hostname = realHostname
 	}
+
 	return fmt.Sprintf("%s%s", hostname, s.port), nil
 }
 
